@@ -10,14 +10,17 @@
 </div>
 
 ##
+<div>
+  <img align="left" alt="Rafa-gif" height="150" width="150" src="https://cdn.discordapp.com/attachments/942105292429201468/1451645233908547734/ezgif.com-crop.gif?ex=6946ed7a&is=69459bfa&hm=84432f79232ed813ecb66f4897ae7421e385f0916cfa45fa2a43c8d684ac661b&)"> 
+<br>
+</div>
 
-<div style="display: inline_block"><br>
-  <img align="center" alt="Rafa-Js" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-plain.svg">
-  <img align="center" alt="Rafa-Ts" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-plain.svg">
-  <img align="center" alt="Rafa-HTML" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg">
-  <img align="center" alt="Rafa-CSS" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg">
-  <img align="right" alt="Rafa-gif" height="130" width="140"
-src="https://cdn.discordapp.com/attachments/942105292429201468/1451645233908547734/ezgif.com-crop.gif?ex=6946ed7a&is=69459bfa&hm=84432f79232ed813ecb66f4897ae7421e385f0916cfa45fa2a43c8d684ac661b&)"> 
+<div style="display: inline_block">
+  <img align="right" alt="Rafa-Js" height="120" width="120" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-plain.svg">
+  <img align="right" alt="Rafa-Ts" height="120" width="120" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-plain.svg">
+  <img align="right" alt="Rafa-HTML" height="120" width="120" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg">
+  <img align="right" alt="Rafa-CSS" height="120" width="120" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg">
+  <br><br><br><br>
 </div>
 
 ##
