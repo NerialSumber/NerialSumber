@@ -40,7 +40,7 @@
   </td>
     <td valign="top" width="50%">
       <div align="center">
-        <img height="180em" src="https://github-readme-stats.vercel.app/api?username=NerialSumber&show_icons=true&theme=tokyonight&hide_rank=true&include_all_commits=true&count_private=true"/>
+        <img height="200em" src="https://github-readme-stats.vercel.app/api?username=NerialSumber&show_icons=true&theme=tokyonight&hide_rank=true&include_all_commits=true&count_private=true"/>
         <br/>
         <img height="120em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=NerialSumber&layout=compact&theme=tokyonight"/>
       </div>
