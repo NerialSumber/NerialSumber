@@ -31,7 +31,7 @@
         <li>🤝 <b>Colaboração:</b> Busco projetos menores para aprender.</li>
       </ul>
       
-      <div align="left">
+  <div align="left">
         <a href="mailto:gabrieloliveira31082000@gmail.com">
           <img src="https://img.shields.io/badge/Gmail-D14836?style=flat&logo=gmail&logoColor=white" alt="Gmail Badge"/>
         </a>
