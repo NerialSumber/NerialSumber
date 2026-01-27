@@ -1,0 +1,55 @@
+.heading-1{
+    color: var(--black);
+    font-family: "Lalezar";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 3rem;
+    line-height: normal;
+}
+
+@media (min-width: 1200px){
+    .heading-1{
+        font-size: 6rem;
+    }
+}
+
+.heading-2{
+    color: var(--black);
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    font-size: 20px;
+}
+
+@media (min-width: 1200px){
+    .heading-2{
+        font-size: 0.75rem;
+    }
+}
+
+.heading-3{
+    color: var(--black);
+    font-family: "Inter";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.text{
+    color: var(--gray);
+    text-align: justify;
+    font-family: "Inter";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+@media (min-width: 1200px){
+    .text{
+        font-size: 16px;
+    }
+}
