@@ -33,9 +33,9 @@
    
 - 🤔 Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).
   
-- 📫 How to reach me: E-mail: gabrieloliveira31082000@gmail.com
-  
 - 😄 Pronouns: He/Him
+  
+- 📫 How to reach me: 
 
 <div> 
   <a href = "mailto:gabrieloliveira31082000@gmail.com"><img src="https://img.shields.io/badge/-Gmail-%23333?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
