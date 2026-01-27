@@ -1,6 +1,6 @@
 <div align="center">
-  <h1>Olá, eu sou o Gabriel Oliveira! 👋</h1>
-  <h3>QA Professional | Front-end Enthusiast | Student</h3>
+  <h1>Hi! I'm Gabriel Oliveira! 👋</h1>
+  <h3>QA & PM Intern | Front-end Enthusiast | Student</h3>
   
   <a href="https://nerialsumber.github.io/NerialSumber">
     <img src="https://img.shields.io/badge/Ver_Meu_Portfólio_Dinâmico-000?style=for-the-badge&logo=github&logoColor=white">
@@ -20,7 +20,7 @@
 <table align="center">
   <tr>
     <td valign="top" width="50%">
-      - 🔭 I’m currently working on QA, PM and Front-end Development.
+- 🔭 I’m currently working on QA, PM and Front-end Development.
   
 - 🌱 Currently learning Business Rules & TypeScript.
   
