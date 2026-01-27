@@ -7,8 +7,6 @@
   </a>
 </div>
 
-<hr/>
-
 <div align="center">
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,git,github,postman&theme=dark" />
