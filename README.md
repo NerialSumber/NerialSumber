@@ -1,3 +1,66 @@
+<div align="center">
+  <h1>Olá, eu sou o Gabriel Oliveira! 👋</h1>
+  <h3>QA Professional | Front-end Enthusiast | Student</h3>
+  
+  <a href="https://nerialsumber.github.io/NerialSumber">
+    <img src="https://img.shields.io/badge/Ver_Meu_Portfólio_Dinâmico-000?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+</div>
+
+<hr/>
+
+<div align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=html,css,js,ts,react,git,github,postman&theme=dark" />
+  </a>
+</div>
+
+<br/>
+
+<table align="center">
+  <tr>
+    <td valign="top" width="50%">
+      <h2>🧐 Sobre Mim</h2>
+      <p>
+        Sou um estagiário apaixonado por tecnologia, focado em garantir qualidade (QA) e criar interfaces (Front-end).
+      </p>
+      <ul>
+        <li>🔭 <b>Trabalhando em:</b> QA e Front-end Development.</li>
+        <li>📚 <b>Estudando:</b> Regras de Negócio & TypeScript.</li>
+        <li>🎯 <b>Foco:</b> Melhorar skills em JavaScript e C.</li>
+        <li>🤝 <b>Colaboração:</b> Busco projetos menores para aprender.</li>
+      </ul>
+      
+      <div align="left">
+        <a href="mailto:gabrieloliveira31082000@gmail.com">
+          <img src="https://img.shields.io/badge/Gmail-D14836?style=flat&logo=gmail&logoColor=white" alt="Gmail Badge"/>
+        </a>
+        <a href="https://www.linkedin.com/in/SEU-LINKEDIN">
+          <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn Badge"/>
+        </a>
+      </div>
+    </td>
+    <td valign="top" width="50%">
+      <div align="center">
+        <img height="180em" src="https://github-readme-stats.vercel.app/api?username=NerialSumber&show_icons=true&theme=tokyonight&hide_rank=true&include_all_commits=true&count_private=true"/>
+        <br/>
+        <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=NerialSumber&layout=compact&theme=tokyonight"/>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=NerialSumber&layout=compact&theme=tokyonight" />
+  </div>
+
+
+
+
+
+
+
+
 ## Hi! I'm Gabriel Oliveira! 👋
 
   <a href="https://github.com/NerialSumber">
