@@ -1,28 +1,5 @@
 ## Hi! I'm Gabriel Oliveira! 👋
 
-const url="https://api.github.com/users/lanalumi/repos"
-const request=fetch(url).then(function(value){
-    return value.json()
-}).then(function(data){    
-    data.forEach(function(repo){
-        
-        const listItem = document.createElement("li")
-        listItem.classList.add("project")
-        listItem.innerHTML = `
-        <a class="project-link" href="${repo.svn_url}" target="_blank">
-            ${repo.name}
-            <img src="./assets/external-link.svg">
-        </a>
-        `
-        const projectsContainer = document.querySelector("[data-projects]")
-        projectsContainer.appendChild(listItem)
-        
-    }) 
-})
-   <script src="./scripts/myprojects.js"></script>
-</body>
-</html>
-<div>
   <a href="https://github.com/NerialSumber">
 
 [![NerialSumber's GitHub stats-Dark](https://github-readme-stats.vercel.app/api?username=NerialSumber&show=prs_merged_percentage&show_icons=true&count_private=true&private_contributions=true&bg_color=100,000428,004e92,5d26c1,a17fe0,f9d423&title_color=fff&text_color=fff&icon_color=f97316#gh-dark-mode-only)](https://github.com/NerialSumber/github-readme-stats#gh-dark-mode-only)
