@@ -51,7 +51,12 @@
 ##
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=NerialSumber&layout=compact&theme=tokyonight" />
+ <div align="center">
+  <img src="github-stats.svg" width="48%" alt="Stats" />
+  <img src="top-langs.svg" width="40%" alt="Linguagens" />
+  <br/>
+  <img src="wakatime.svg" width="89%" alt="WakaTime Stats" />
+</div>
   </div>
 
 ##
