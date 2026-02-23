@@ -2,8 +2,8 @@ name: Update GitHub Stats
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Roda a cada 12 horas
-  workflow_dispatch: # Permite rodar manualmente
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,27 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Iniciar Servidor de Stats (Versão Self-Hosted)
+      - name: Iniciar Servidor (Porta Corrigida)
         run: |
-          # Usamos a imagem do 'utkuozdemir', que é feita especificamente para rodar fora da Vercel
-          # Mapeamos a porta 9000 do container para a 3000 do runner
-          docker run -d --name stats-api -p 3000:9000 \
+          # Correção: Mapeando a porta 3000 do GitHub Actions para a porta 80 do Container
+          docker run -d --name stats-api -p 3000:80 \
             -e PAT_1="${{ secrets.GH_TOKEN }}" \
             ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
           
-          echo "Aguardando o container iniciar..."
+          echo "Aguardando servidor subir (15s)..."
           sleep 15
           
-          # Verificação rápida se o servidor subiu
-          curl -I http://localhost:3000/api || echo "Aviso: Servidor demorou a responder, tentando gerar a imagem mesmo assim..."
+          # Debug: Se falhar, vamos ver o que aconteceu dentro do container
+          docker ps
+          docker logs stats-api
 
       - name: Gerar Imagem SVG
         run: |
-          # Gera o SVG. Note que adicionei '&count_private=true' para contar seus commits privados
-          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          # Tenta gerar a imagem. Se falhar, mostra o erro no console.
+          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # Move para a pasta correta (se necessário) ou mantém na raiz
-          # O checkout já está na raiz, então o arquivo já está no lugar certo
+      - name: Verificar se arquivo foi criado
+        run: |
+          if [ -s github-stats.svg ]; then
+            echo "Sucesso! Imagem gerada."
+          else
+            echo "Erro: O arquivo está vazio ou não foi criado."
+            exit 1
+          fi
 
       - name: Commit e Push
         run: |
@@ -43,6 +49,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git add github-stats.svg
-          # O '|| exit 0' impede que o workflow falhe se não houver mudanças nas estatísticas
-          git commit -m "docs: atualiza estatísticas do perfil" || exit 0
+          git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças para commitar"
           git push
