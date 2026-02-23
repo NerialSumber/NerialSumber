@@ -15,58 +15,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Iniciar Servidor e Aguardar (Smart Wait)
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          # Verifica se o token existe antes de começar
-          if [ -z "$GH_TOKEN" ]; then
-            echo "❌ ERRO: O Secret GH_TOKEN está vazio ou não foi configurado!"
-            exit 1
-          fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-          echo "🚀 Iniciando Container..."
-          # Roda o container na porta 3000
-          docker run -d --name stats-api -p 3000:3000 \
-            -e PAT_1="$GH_TOKEN" \
-            ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
+      - name: Baixar e Rodar Servidor (Sem Docker)
+        env:
+          # O código oficial exige que a variável se chame PAT_1
+          PAT_1: ${{ secrets.GH_TOKEN }}
+        run: |
+          # 1. Clona o código oficial fresquinho
+          git clone https://github.com/anuraghazra/github-readme-stats.git
+          cd github-readme-stats
           
-          echo "⏳ Aguardando o servidor ficar pronto (pode demorar uns minutos)..."
+          # 2. Instala dependências SEM perder tempo com auditoria (no-audit)
+          # Isso pula a etapa que estava travando o seu workflow por 5 minutos
+          npm install --no-audit --omit=dev
           
-          # Loop Inteligente: Tenta conectar a cada 10s (Limite: 30 tentativas = 5 min)
-          RETRIES=0
-          MAX_RETRIES=30
-          until curl -s -f -o /dev/null "http://localhost:3000/api?username=NerialSumber"; do
-            echo "Tentativa $RETRIES/$MAX_RETRIES: Servidor ainda indisponível... esperando 10s"
-            sleep 10
-            RETRIES=$((RETRIES+1))
-            
-            # Se atingir o limite, mostra os logs e falha
-            if [ $RETRIES -ge $MAX_RETRIES ]; then
-              echo "❌ ERRO: Timeout! O servidor não subiu após 5 minutos."
-              echo "--- LOGS DO CONTAINER ---"
-              docker logs stats-api
-              exit 1
-            fi
-          done
+          # 3. Inicia o servidor em background diretamente pelo Node
+          export PORT=3000
+          node src/index.js > server.log 2>&1 &
           
-          echo "✅ Servidor Online e Respondendo!"
+          # 4. Espera inteligentemente o servidor subir
+          echo "Aguardando servidor iniciar..."
+          npx wait-on http://localhost:3000 --timeout 60000
+          echo "Servidor online!"
 
       - name: Gerar Imagem SVG
         run: |
-          # Agora temos certeza que o servidor está de pé
+          # Gera o SVG batendo no servidor local que acabamos de subir
           curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          
+          # Move o arquivo para a raiz (sai da pasta do stats e vai para o repo)
+          mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
+          # Verifica se o arquivo existe e tem tamanho maior que 0
           if [ -s github-stats.svg ]; then
             git add github-stats.svg
-            git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças"
+            git commit -m "docs: atualiza estatísticas do perfil" || exit 0
             git push
           else
-            echo "⚠️ Aviso: Arquivo gerado está vazio."
+            echo "❌ Erro: O arquivo gerado está vazio. Verifique os logs."
+            # Se der erro, mostra o log do servidor para debug
+            cat github-readme-stats/server.log
             exit 1
           fi
