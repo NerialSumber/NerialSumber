@@ -2,8 +2,8 @@ name: Update GitHub Stats
 
 on:
   schedule:
-    - cron: '0 */12 * * *'
-  workflow_dispatch:
+    - cron: '0 */12 * * *' # Roda a cada 12 horas
+  workflow_dispatch: # Permite rodar manualmente para testar
 
 permissions:
   contents: write
@@ -15,33 +15,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Iniciar Servidor (Porta Corrigida)
+      - name: Iniciar Servidor (Modo Rede Host)
         run: |
-          # Correção: Mapeando a porta 3000 do GitHub Actions para a porta 80 do Container
-          docker run -d --name stats-api -p 3000:80 \
+          # Usamos --network host para eliminar problemas de porta
+          # A imagem utkuozdemir roda na porta 80 internamente
+          docker run -d --network host \
             -e PAT_1="${{ secrets.GH_TOKEN }}" \
             ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
           
-          echo "Aguardando servidor subir (15s)..."
-          sleep 15
+          echo "Aguardando servidor subir (20s)..."
+          sleep 20
           
-          # Debug: Se falhar, vamos ver o que aconteceu dentro do container
-          docker ps
-          docker logs stats-api
+          # Debug: Verificar se tem algo rodando na porta 80
+          sudo netstat -tulpn | grep :80 || echo "Nada na porta 80 ainda"
 
       - name: Gerar Imagem SVG
         run: |
-          # Tenta gerar a imagem. Se falhar, mostra o erro no console.
-          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
-          
-      - name: Verificar se arquivo foi criado
-        run: |
-          if [ -s github-stats.svg ]; then
-            echo "Sucesso! Imagem gerada."
-          else
-            echo "Erro: O arquivo está vazio ou não foi criado."
-            exit 1
-          fi
+          # Com network host, acessamos direto no localhost:80
+          curl -v "http://localhost:80/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
 
       - name: Commit e Push
         run: |
@@ -49,5 +40,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git add github-stats.svg
-          git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças para commitar"
+          git commit -m "docs: atualiza estatísticas" || exit 0
           git push
