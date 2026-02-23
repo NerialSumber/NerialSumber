@@ -18,34 +18,63 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Mantendo a v22 que o projeto pediu
+          node-version: '22'
 
-      - name: Baixar e Rodar Servidor (Debug Blindado)
+      - name: Baixar e Rodar Servidor
         env:
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
+          # 1. Clona o repositório
           git clone https://github.com/anuraghazra/github-readme-stats.git
           cd github-readme-stats
           
+          # 2. Instalação Limpa
           echo "📦 Instalando dependências..."
-          # REMOVIDO: --omit=dev (causou a falha dos 27 pacotes)
-          # MANTIDO: --ignore-scripts (evita o erro do husky)
-          npm install --no-audit --ignore-scripts
+          npm install --no-audit --ignore-scripts --no-fund
           
+          # 3. Inicia o servidor em Background
           echo "🚀 Iniciando servidor..."
           export PORT=3000
-          # Inicia e joga o log para server.log
           node src/index.js > server.log 2>&1 &
+          PID=$!
           
-          echo "⏳ Aguardando porta 3000 abrir..."
-          # Se falhar após 30s, mostra o log do erro IMEDIATAMENTE e encerra
-          npx wait-on http://localhost:3000 --timeout 30000 || (echo "❌ FALHA AO INICIAR SERVIDOR! LOG ABAIXO:" && cat server.log && exit 1)
+          # 4. Loop de Espera (Curl) - Tenta por 2 minutos
+          echo "⏳ Aguardando servidor responder na porta 3000..."
           
-          echo "✅ Servidor Online!"
+          COUNT=0
+          MAX_RETRIES=24 # 24 * 5s = 120 segundos (2 minutos)
+          SUCCESS=0
+          
+          while [ $COUNT -lt $MAX_RETRIES ]; do
+            if curl -s http://localhost:3000/api > /dev/null; then
+              echo "✅ Servidor respondeu!"
+              SUCCESS=1
+              break
+            fi
+            
+            # Se o processo do node morreu, para agora
+            if ! kill -0 $PID 2>/dev/null; then
+              echo "❌ O processo do servidor morreu inesperadamente."
+              break
+            fi
+            
+            echo "Attempt $(($COUNT+1))/$MAX_RETRIES: Aguardando..."
+            sleep 5
+            COUNT=$(($COUNT+1))
+          done
+          
+          # Debug final se falhar
+          if [ $SUCCESS -eq 0 ]; then
+            echo "❌ ERRO: Timeout ou Falha do Servidor. Logs:"
+            cat server.log
+            exit 1
+          fi
 
       - name: Gerar Imagem SVG
         run: |
+          echo "📸 Gerando imagem para NerialSumber..."
           curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          
           mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
@@ -55,7 +84,7 @@ jobs:
           
           if [ -s github-stats.svg ]; then
             git add github-stats.svg
-            git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças"
+            git commit -m "docs: atualiza estatísticas de NerialSumber" || echo "Sem mudanças"
             git push
           else
             echo "❌ Erro: Arquivo vazio."
