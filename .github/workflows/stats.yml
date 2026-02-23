@@ -24,80 +24,66 @@ jobs:
         run: |
           git clone https://github.com/anuraghazra/github-readme-stats.git
           cd github-readme-stats
-          
-          echo "📦 Instalando dependências..."
           npm pkg delete scripts.prepare
           npm install --no-audit --no-fund --ignore-scripts
-          
-          echo "📦 Instalando Express..."
           npm install express
 
-      - name: Criar e Iniciar Servidor (Wrapper ESM)
+      - name: Criar e Iniciar Servidor (Wrapper)
         env:
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
           cd github-readme-stats
           
-          # CRIA O SERVIDOR (WRAPPER)
           cat <<EOF > local-server.js
           import express from 'express';
           import handler from './api/index.js';
+          import langsHandler from './api/top-langs.js'; 
 
           const app = express();
           const port = 3000;
 
+          // Rota para Stats Gerais
           app.get('/api', async (req, res) => {
-            try {
-              await handler(req, res);
-            } catch (err) {
-              console.error(err);
-              res.status(500).send('Erro interno');
-            }
+            try { await handler(req, res); } 
+            catch (err) { console.error(err); res.status(500).send('Erro'); }
+          });
+
+          // NOVA ROTA: Top Languages
+          app.get('/api/top-langs', async (req, res) => {
+            try { await langsHandler(req, res); } 
+            catch (err) { console.error(err); res.status(500).send('Erro'); }
           });
 
           app.listen(port, () => {
-            console.log('✅ Servidor wrapper rodando na porta ' + port);
+            console.log('✅ Servidor rodando na porta ' + port);
           });
           EOF
 
-          # INICIA O SERVIDOR
-          echo "🚀 Iniciando servidor..."
           nohup node local-server.js > server.log 2>&1 &
           PID=$!
-          
-          echo "⏳ Aguardando 10 segundos..."
           sleep 10
-          
           if ! kill -0 $PID 2>/dev/null; then
-            echo "❌ O servidor morreu! Logs:"
             cat server.log
             exit 1
           fi
 
-      - name: Gerar Imagem SVG
+      - name: Gerar Imagens SVG
         run: |
-          echo "📸 Baixando stats de NerialSumber..."
-          
-          # Baixa a imagem diretamente na raiz do repositório
+          echo "📸 Baixando Stats..."
           curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # REMOVIDO: mv github-stats.svg ../github-stats.svg
-          # (O arquivo já está no lugar certo!)
+          echo "📸 Baixando Linguagens..."
+          # Aqui pedimos as linguagens. Usei layout=compact que economiza espaço
+          curl -v "http://localhost:3000/api/top-langs?username=NerialSumber&layout=compact&theme=radical&hide_border=true" -o top-langs.svg
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Verifica o tamanho do arquivo
-          if [ -s github-stats.svg ]; then
-            echo "✅ Arquivo gerado com sucesso ($(wc -c < github-stats.svg) bytes)."
-            git add github-stats.svg
-            git commit -m "docs: atualiza estatísticas de NerialSumber" || echo "Sem mudanças para commitar"
-            git push
-            echo "🎉 TUDO CERTO!"
-          else
-            echo "❌ Erro: Arquivo vazio."
-            cat github-readme-stats/server.log
-            exit 1
-          fi
+          # Adiciona todos os SVGs gerados
+          git add *.svg
+          
+          # Commita se houver mudanças
+          git commit -m "docs: atualiza stats e linguagens" || echo "Sem mudanças"
+          git push
