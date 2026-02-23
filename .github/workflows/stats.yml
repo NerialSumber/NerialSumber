@@ -2,8 +2,8 @@ name: GitHub Readme Stats (Docker)
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Roda a cada 12 horas
-  workflow_dispatch: # Permite rodar manualmente para testar
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 jobs:
   update-stats:
@@ -14,15 +14,20 @@ jobs:
 
       - name: Run Stats Container
         run: |
+          # Em vez de baixar uma imagem pronta que pode falhar, 
+          # vamos rodar a imagem oficial do criador original (anuraghazra)
+          # ou usar o comando direto via npx se preferir, mas mantendo o Docker:
+          
           docker run -d --name stats-api -p 3000:3000 \
-          -e PAT=${{ secrets.GH_TOKEN }} \
-          fimsh/github-readme-stats-docker:latest
+          -e AUTH_TOKEN=${{ secrets.GH_TOKEN }} \
+          -e VERCEL_ENV=production \
+          anuraghazra/github-readme-stats:latest || \
+          docker run -d --name stats-api -p 3000:3000 -e AUTH_TOKEN=${{ secrets.GH_TOKEN }} hctis/github-readme-stats-docker:latest
+
+          sleep 15
           
-          # Aguarda o container subir
-          sleep 10
-          
-          # Baixa a imagem gerada (substitua pelo seu usuário)
-          curl "http://localhost:3000/api?NerialSumber&show_icons=true&theme=radical" -o github-stats.svg
+          # Use o seu nome de usuário: 
+          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical" -o github-stats.svg
 
       - name: Commit e Push
         run: |
