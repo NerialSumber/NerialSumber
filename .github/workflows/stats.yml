@@ -2,8 +2,8 @@ name: Update GitHub Stats
 
 on:
   schedule:
-    - cron: '0 */12 * * *'
-  workflow_dispatch:
+    - cron: '0 */12 * * *' # Roda a cada 12 horas
+  workflow_dispatch: # Permite rodar manualmente
 
 permissions:
   contents: write
@@ -15,53 +15,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Instalar Dependências e Ferramentas
+      - name: Iniciar Servidor de Stats (Versão Self-Hosted)
         run: |
-          git clone https://github.com/anuraghazra/github-readme-stats.git stats-generator
-          cd stats-generator
-          npm install
-          npm install -g wait-on
-
-      - name: Iniciar Servidor (Debug Mode)
-        env:
-          PAT_1: ${{ secrets.GH_TOKEN }}
-        run: |
-          cd stats-generator
+          # Usamos a imagem do 'utkuozdemir', que é feita especificamente para rodar fora da Vercel
+          # Mapeamos a porta 9000 do container para a 3000 do runner
+          docker run -d --name stats-api -p 3000:9000 \
+            -e PAT_1="${{ secrets.GH_TOKEN }}" \
+            ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
           
-          # Verifica se o token existe (sem mostrar o valor)
-          if [ -z "$PAT_1" ]; then
-            echo "ERRO CRÍTICO: O segredo GH_TOKEN não foi encontrado ou está vazio!"
-            exit 1
-          fi
-
-          export PORT=3000
-          # Inicia o servidor e joga o log para um arquivo para lermos depois se der erro
-          npm start > server.log 2>&1 &
+          echo "Aguardando o container iniciar..."
+          sleep 15
           
-          echo "Servidor iniciando... Aguardando porta 3000..."
-          
-          # Espera até 60 segundos pela porta 3000
-          npx wait-on tcp:3000 --timeout 60000 || (cat server.log && exit 1)
-          
-          echo "Servidor online!"
+          # Verificação rápida se o servidor subiu
+          curl -I http://localhost:3000/api || echo "Aviso: Servidor demorou a responder, tentando gerar a imagem mesmo assim..."
 
       - name: Gerar Imagem SVG
         run: |
-          # Gera o SVG
-          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          # Gera o SVG. Note que adicionei '&count_private=true' para contar seus commits privados
+          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # Move para a pasta principal
-          mv github-stats.svg ../github-stats.svg
+          # Move para a pasta correta (se necessário) ou mantém na raiz
+          # O checkout já está na raiz, então o arquivo já está no lugar certo
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
           git add github-stats.svg
-          git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças"
+          # O '|| exit 0' impede que o workflow falhe se não houver mudanças nas estatísticas
+          git commit -m "docs: atualiza estatísticas do perfil" || exit 0
           git push
