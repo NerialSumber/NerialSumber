@@ -37,9 +37,9 @@
       <div align="center">
         <div align="center">
           <div align="center">
-  <img src="github-stats.svg" width="400" alt="Estatísticas do Gabriel" />
+  <img src="github-stats.svg" width="48%" alt="Estatísticas do Gabriel" />
             <br>
-  <img src="top-langs.svg" width="400" alt="Linguagens do Gabriel" />          
+  <img src="top-langs.svg" width="40%" alt="Linguagens do Gabriel" />          
 </div>
 </div>
         <br/>
@@ -52,9 +52,6 @@
 
 <div align="center">
  <div align="center">
-  <img src="github-stats.svg" width="48%" alt="Stats" />
-  <img src="top-langs.svg" width="40%" alt="Linguagens" />
-  <br/>
   <img src="wakatime.svg" width="89%" alt="WakaTime Stats" />
 </div>
   </div>
