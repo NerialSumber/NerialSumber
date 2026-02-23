@@ -1,38 +1,58 @@
-name: GitHub Readme Stats (Docker)
+name: Update GitHub Stats
 
 on:
   schedule:
-    - cron: '0 */12 * * *'
-  workflow_dispatch:
+    - cron: '0 */12 * * *' # Roda a cada 12 horas
+  workflow_dispatch: # Permite rodar manualmente
+
+permissions:
+  contents: write
 
 jobs:
   update-stats:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout do seu repositório
         uses: actions/checkout@v4
 
-      - name: Run Stats Container
-        run: |
-          # Em vez de baixar uma imagem pronta que pode falhar, 
-          # vamos rodar a imagem oficial do criador original (anuraghazra)
-          # ou usar o comando direto via npx se preferir, mas mantendo o Docker:
-          
-          docker run -d --name stats-api -p 3000:3000 \
-          -e AUTH_TOKEN=${{ secrets.GH_TOKEN }} \
-          -e VERCEL_ENV=production \
-          anuraghazra/github-readme-stats:latest || \
-          docker run -d --name stats-api -p 3000:3000 -e AUTH_TOKEN=${{ secrets.GH_TOKEN }} hctis/github-readme-stats-docker:latest
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-          sleep 15
+      - name: Baixar e Configurar Gerador de Stats
+        run: |
+          # Clona o repositório oficial da ferramenta
+          git clone https://github.com/anuraghazra/github-readme-stats.git stats-generator
+          cd stats-generator
+          npm install
           
-          # Use o seu nome de usuário: 
-          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical" -o github-stats.svg
+          # Inicia o servidor em background
+          # PAT_1 é a variável que o código oficial espera para o token
+          export PAT_1="${{ secrets.GH_TOKEN }}"
+          export PORT=3000
+          npm start > /dev/null 2>&1 &
+          
+          # Aguarda o servidor subir (dá um tempo de segurança)
+          echo "Aguardando servidor iniciar..."
+          sleep 10
+
+      - name: Gerar Imagem SVG
+        run: |
+          # Faz a requisição localmente para gerar o SVG
+          # Personalize aqui: mude 'NerialSumber' se seu user for diferente
+          # Adicionei &hide_border=true e &title_color=... para ficar mais bonito
+          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          
+          # Move o arquivo para a raiz do workspace para ser commitado
+          mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Verifica se houve mudança antes de commitar para não dar erro
           git add github-stats.svg
-          git commit -m "chore: update github stats" || exit 0
+          git commit -m "docs: atualiza estatísticas do perfil" || echo "Sem mudanças para commitar"
           git push
