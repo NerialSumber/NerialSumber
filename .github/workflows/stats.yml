@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Baixar e Rodar Servidor
+      - name: Baixar e Preparar Servidor
         env:
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
@@ -28,51 +28,57 @@ jobs:
           git clone https://github.com/anuraghazra/github-readme-stats.git
           cd github-readme-stats
           
-          # 2. Instalação Limpa
-          echo "📦 Instalando dependências..."
-          npm install --no-audit --ignore-scripts --no-fund
+          # 2. CIRURGIA: Remove o script 'prepare' que tenta rodar o Husky e causa erro
+          # Isso permite rodar 'npm install' normal, sem flags perigosas
+          npm pkg delete scripts.prepare
           
-          # 3. Inicia o servidor em Background
+          # 3. Instalação Completa (Agora segura)
+          echo "📦 Instalando dependências..."
+          npm install --no-audit --no-fund
+          
+          # 4. Inicia o servidor e garante que o log seja gravado
           echo "🚀 Iniciando servidor..."
           export PORT=3000
           node src/index.js > server.log 2>&1 &
           PID=$!
           
-          # 4. Loop de Espera (Curl) - Tenta por 2 minutos
-          echo "⏳ Aguardando servidor responder na porta 3000..."
+          # 5. Loop de Verificação (Tenta por 1 minuto)
+          echo "⏳ Aguardando servidor NerialSumber responder na porta 3000..."
           
           COUNT=0
-          MAX_RETRIES=24 # 24 * 5s = 120 segundos (2 minutos)
+          MAX_RETRIES=12 # 12 * 5s = 60 segundos
           SUCCESS=0
           
           while [ $COUNT -lt $MAX_RETRIES ]; do
+            # Verifica se o processo ainda está vivo
+            if ! kill -0 $PID 2>/dev/null; then
+              echo "❌ CRÍTICO: O processo do node morreu!"
+              echo "--- ÚLTIMOS LOGS ---"
+              cat server.log
+              exit 1
+            fi
+
+            # Tenta conectar
             if curl -s http://localhost:3000/api > /dev/null; then
-              echo "✅ Servidor respondeu!"
+              echo "✅ Servidor respondeu com sucesso!"
               SUCCESS=1
               break
             fi
             
-            # Se o processo do node morreu, para agora
-            if ! kill -0 $PID 2>/dev/null; then
-              echo "❌ O processo do servidor morreu inesperadamente."
-              break
-            fi
-            
-            echo "Attempt $(($COUNT+1))/$MAX_RETRIES: Aguardando..."
+            echo "Tentativa $(($COUNT+1))/$MAX_RETRIES: Aguardando..."
             sleep 5
             COUNT=$(($COUNT+1))
           done
           
-          # Debug final se falhar
           if [ $SUCCESS -eq 0 ]; then
-            echo "❌ ERRO: Timeout ou Falha do Servidor. Logs:"
+            echo "❌ Timeout: Servidor não respondeu a tempo."
             cat server.log
             exit 1
           fi
 
       - name: Gerar Imagem SVG
         run: |
-          echo "📸 Gerando imagem para NerialSumber..."
+          echo "📸 Baixando estatísticas..."
           curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
           mv github-stats.svg ../github-stats.svg
@@ -87,6 +93,6 @@ jobs:
             git commit -m "docs: atualiza estatísticas de NerialSumber" || echo "Sem mudanças"
             git push
           else
-            echo "❌ Erro: Arquivo vazio."
+            echo "❌ Erro: Arquivo gerado está vazio."
             exit 1
           fi
