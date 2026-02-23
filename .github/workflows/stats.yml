@@ -18,66 +18,74 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Voltando para v20 que é mais estável para esse projeto
+          node-version: '20'
 
-      - name: Diagnóstico e Instalação
-        env:
-          MY_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Instalar Dependências e Express
         run: |
-          # 1. Verificação de Segurança do Token
-          if [ -z "$MY_TOKEN" ]; then
-            echo "🚨 ERRO CRÍTICO: O secret 'GH_TOKEN' está vazio ou não existe!"
-            echo "Vá em Settings > Secrets and variables > Actions e crie o GH_TOKEN."
-            exit 1
-          else
-            echo "✅ Token encontrado (Comprimento: ${#MY_TOKEN} caracteres)."
-          fi
-
-          # 2. Clone e Instalação
           git clone https://github.com/anuraghazra/github-readme-stats.git
           cd github-readme-stats
           
-          echo "📦 Instalando pacotes (Ignorando scripts chatos)..."
+          echo "📦 Instalando dependências do projeto + Express..."
+          # Remove script de prepare para não travar (Husky)
+          npm pkg delete scripts.prepare
+          # Instala tudo + o express para criarmos nosso servidor
           npm install --no-audit --no-fund --ignore-scripts
+          npm install express
 
-      - name: Iniciar Servidor
+      - name: Criar e Iniciar Servidor Local
         env:
+          # O Token é injetado aqui para o servidor ler
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
           cd github-readme-stats
-          echo "🚀 Iniciando aplicação..."
           
-          # Define a porta explicitamente
-          export PORT=3000
-          
-          # Inicia em background usando nohup para não morrer quando o shell fechar
-          # Redireciona TUDO para server.log sem buffer
-          nohup npm start > server.log 2>&1 &
+          # CRIANDO O SERVIDOR NA MÃO (Node.js script)
+          # Isso envelopa a função da Vercel num servidor Express real
+          cat <<EOF > local-server.js
+          const express = require('express');
+          const app = express();
+          // Importa a função principal da API
+          const handler = require('./api/index.js');
+
+          app.get('/api', async (req, res) => {
+            try {
+              await handler(req, res);
+            } catch (err) {
+              console.error(err);
+              res.status(500).send('Erro interno');
+            }
+          });
+
+          const port = 3000;
+          app.listen(port, () => {
+            console.log('✅ Servidor wrapper rodando na porta ' + port);
+          });
+          EOF
+
+          # Inicia o nosso servidor customizado
+          echo "🚀 Iniciando servidor wrapper..."
+          nohup node local-server.js > server.log 2>&1 &
           PID=$!
-          echo "Processo iniciado com PID: $PID"
           
-          echo "⏳ Aguardando 15 segundos para inicialização..."
-          sleep 15
+          echo "⏳ Aguardando 10 segundos..."
+          sleep 10
           
-          # Mostra o log inicial para sabermos se deu certo
-          echo "--- LOG INICIAL DO SERVIDOR ---"
-          cat server.log
-          echo "-------------------------------"
-          
-          # Verifica se o processo ainda existe
+          # Verifica se está rodando
           if ! kill -0 $PID 2>/dev/null; then
-            echo "❌ O servidor morreu durante a inicialização!"
+            echo "❌ O servidor morreu! Logs:"
+            cat server.log
             exit 1
           fi
+          echo "Logs iniciais:"
+          head -n 20 server.log
 
       - name: Gerar Imagem SVG
         run: |
-          echo "📸 Solicitando imagem para: NerialSumber"
+          echo "📸 Baixando stats de NerialSumber..."
           
-          # Tenta baixar a imagem. Se falhar, mostra o erro (-v)
+          # Faz a requisição para o nosso servidor local
           curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # Move para a raiz
           mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
@@ -89,8 +97,9 @@ jobs:
             git add github-stats.svg
             git commit -m "docs: atualiza estatísticas de NerialSumber" || echo "Sem mudanças"
             git push
-            echo "✅ Sucesso Total!"
+            echo "✅ Sucesso!"
           else
-            echo "❌ Erro: O arquivo github-stats.svg está vazio ou não foi gerado."
+            echo "❌ Erro: Arquivo vazio."
+            cat github-readme-stats/server.log
             exit 1
           fi
