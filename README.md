@@ -37,7 +37,7 @@
       <div align="center">
         <div align="center">
           <div align="center">
-
+  <img src="github-stats.svg" width="400" alt="Estatísticas do Gabriel" />
   <img src="top-langs.svg" width="400" alt="Linguagens do Gabriel" />          
 </div>
 </div>
