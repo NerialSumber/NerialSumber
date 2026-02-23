@@ -3,7 +3,7 @@ name: Update GitHub Stats
 on:
   schedule:
     - cron: '0 */12 * * *' # Roda a cada 12 horas
-  workflow_dispatch: # Permite rodar manualmente para testar
+  workflow_dispatch: # Permite rodar manualmente
 
 permissions:
   contents: write
@@ -15,30 +15,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Iniciar Servidor (Modo Rede Host)
+      - name: Iniciar Servidor e Aguardar
         run: |
-          # Usamos --network host para eliminar problemas de porta
-          # A imagem utkuozdemir roda na porta 80 internamente
-          docker run -d --network host \
+          # 1. Usamos a imagem estável do utkuozdemir
+          # 2. Mapeamos 3000:3000 (A porta CORRETA)
+          # 3. Passamos o PAT_1 que é obrigatório
+          docker run -d --name stats-api -p 3000:3000 \
             -e PAT_1="${{ secrets.GH_TOKEN }}" \
             ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
           
-          echo "Aguardando servidor subir (20s)..."
-          sleep 20
+          echo "⏳ Aguardando 60 segundos para o container baixar dependências e iniciar..."
+          sleep 60
           
-          # Debug: Verificar se tem algo rodando na porta 80
-          sudo netstat -tulpn | grep :80 || echo "Nada na porta 80 ainda"
+          # DEBUG: Mostra os logs para confirmar que a porta 3000 abriu
+          echo "--- LOGS DO CONTAINER ---"
+          docker logs stats-api
+          echo "-------------------------"
 
       - name: Gerar Imagem SVG
         run: |
-          # Com network host, acessamos direto no localhost:80
-          curl -v "http://localhost:80/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          # Agora batemos na porta 3000 correta
+          curl -v "http://localhost:3000/api?username=gabriel-oliveira&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
 
-      - name: Commit e Push
+      - name: Verificar e Commitar
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git add github-stats.svg
-          git commit -m "docs: atualiza estatísticas" || exit 0
-          git push
+          if [ -s github-stats.svg ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add github-stats.svg
+            git commit -m "docs: atualiza estatísticas" || exit 0
+            git push
+          else
+            echo "❌ Erro: O arquivo SVG não foi gerado (tamanho 0)."
+            exit 1
+          fi
