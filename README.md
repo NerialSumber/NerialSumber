@@ -36,7 +36,9 @@
     <td valign="top" width="50%">
       <div align="center">
         <div align="center">
-  <img src="github-stats.svg" width="400" alt="Estatísticas do Gabriel" />
+ <td align="center" valign="middle">
+  <img src="github-stats.svg" width="100%" alt="Estatísticas" />
+</td>
 </div>
         <br/>
       </div>
