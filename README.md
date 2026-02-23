@@ -35,9 +35,8 @@
   </td>
     <td valign="top" width="50%">
       <div align="center">
-        ![Minhas Estatísticas](./github-stats.svg)
+        ![Minhas Estatísticas do GitHub](github-stats.svg)
         <br/>
-        <img height="120em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=NerialSumber&layout=compact&theme=tokyonight"/>
       </div>
     </td>
   </tr>
