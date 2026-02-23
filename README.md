@@ -35,7 +35,9 @@
   </td>
     <td valign="top" width="50%">
       <div align="center">
-        <img src="github-stats.svg" alt="Stats do NerialSumber" width="400px" />
+        <div align="center">
+  <img src="github-stats.svg" width="400" alt="Estatísticas do Gabriel" />
+</div>
         <br/>
       </div>
     </td>
