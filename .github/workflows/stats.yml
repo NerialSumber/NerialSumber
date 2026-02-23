@@ -15,37 +15,58 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Iniciar Servidor e Aguardar
+      - name: Iniciar Servidor e Aguardar (Smart Wait)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          # 1. Usamos a imagem estável do utkuozdemir
-          # 2. Mapeamos 3000:3000 (A porta CORRETA)
-          # 3. Passamos o PAT_1 que é obrigatório
+          # Verifica se o token existe antes de começar
+          if [ -z "$GH_TOKEN" ]; then
+            echo "❌ ERRO: O Secret GH_TOKEN está vazio ou não foi configurado!"
+            exit 1
+          fi
+
+          echo "🚀 Iniciando Container..."
+          # Roda o container na porta 3000
           docker run -d --name stats-api -p 3000:3000 \
-            -e PAT_1="${{ secrets.GH_TOKEN }}" \
+            -e PAT_1="$GH_TOKEN" \
             ghcr.io/utkuozdemir/github-readme-stats-selfhosted:latest
           
-          echo "⏳ Aguardando 60 segundos para o container baixar dependências e iniciar..."
-          sleep 60
+          echo "⏳ Aguardando o servidor ficar pronto (pode demorar uns minutos)..."
           
-          # DEBUG: Mostra os logs para confirmar que a porta 3000 abriu
-          echo "--- LOGS DO CONTAINER ---"
-          docker logs stats-api
-          echo "-------------------------"
+          # Loop Inteligente: Tenta conectar a cada 10s (Limite: 30 tentativas = 5 min)
+          RETRIES=0
+          MAX_RETRIES=30
+          until curl -s -f -o /dev/null "http://localhost:3000/api?username=NerialSumber"; do
+            echo "Tentativa $RETRIES/$MAX_RETRIES: Servidor ainda indisponível... esperando 10s"
+            sleep 10
+            RETRIES=$((RETRIES+1))
+            
+            # Se atingir o limite, mostra os logs e falha
+            if [ $RETRIES -ge $MAX_RETRIES ]; then
+              echo "❌ ERRO: Timeout! O servidor não subiu após 5 minutos."
+              echo "--- LOGS DO CONTAINER ---"
+              docker logs stats-api
+              exit 1
+            fi
+          done
+          
+          echo "✅ Servidor Online e Respondendo!"
 
       - name: Gerar Imagem SVG
         run: |
-          # Agora batemos na porta 3000 correta
-          curl -v "http://localhost:3000/api?username=gabriel-oliveira&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          # Agora temos certeza que o servidor está de pé
+          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
 
-      - name: Verificar e Commitar
+      - name: Commit e Push
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
           if [ -s github-stats.svg ]; then
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add github-stats.svg
-            git commit -m "docs: atualiza estatísticas" || exit 0
+            git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças"
             git push
           else
-            echo "❌ Erro: O arquivo SVG não foi gerado (tamanho 0)."
+            echo "⚠️ Aviso: Arquivo gerado está vazio."
             exit 1
           fi
