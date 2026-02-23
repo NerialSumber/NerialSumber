@@ -18,36 +18,34 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22' # Atualizado para v22 conforme exigido pelo log
 
-      - name: Baixar e Rodar Servidor (Sem Docker)
+      - name: Baixar e Rodar Servidor
         env:
-          # O código oficial exige que a variável se chame PAT_1
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
-          # 1. Clona o código oficial fresquinho
           git clone https://github.com/anuraghazra/github-readme-stats.git
           cd github-readme-stats
           
-          # 2. Instala dependências SEM perder tempo com auditoria (no-audit)
-          # Isso pula a etapa que estava travando o seu workflow por 5 minutos
-          npm install --no-audit --omit=dev
+          # AQUI ESTÁ A CORREÇÃO MÁGICA:
+          # --ignore-scripts: Impede que o 'husky' tente rodar e falhe o processo
+          # --no-audit: Impede que ele perca tempo verificando segurança
+          npm install --no-audit --omit=dev --ignore-scripts
           
-          # 3. Inicia o servidor em background diretamente pelo Node
+          # Inicia o servidor
           export PORT=3000
           node src/index.js > server.log 2>&1 &
           
-          # 4. Espera inteligentemente o servidor subir
           echo "Aguardando servidor iniciar..."
           npx wait-on http://localhost:3000 --timeout 60000
-          echo "Servidor online!"
+          echo "✅ Servidor online!"
 
       - name: Gerar Imagem SVG
         run: |
-          # Gera o SVG batendo no servidor local que acabamos de subir
+          # Gera o SVG
           curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # Move o arquivo para a raiz (sai da pasta do stats e vai para o repo)
+          # Move para a raiz
           mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
@@ -55,14 +53,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Verifica se o arquivo existe e tem tamanho maior que 0
           if [ -s github-stats.svg ]; then
             git add github-stats.svg
             git commit -m "docs: atualiza estatísticas do perfil" || exit 0
             git push
           else
-            echo "❌ Erro: O arquivo gerado está vazio. Verifique os logs."
-            # Se der erro, mostra o log do servidor para debug
+            echo "❌ Erro: O arquivo gerado está vazio. Logs do servidor:"
             cat github-readme-stats/server.log
             exit 1
           fi
