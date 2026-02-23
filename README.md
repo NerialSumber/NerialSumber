@@ -35,7 +35,7 @@
   </td>
     <td valign="top" width="50%">
       <div align="center">
-        ![Minhas Estatísticas do GitHub](github-stats.svg)
+        <img src="github-stats.svg" alt="Stats do NerialSumber" width="400px" />
         <br/>
       </div>
     </td>
