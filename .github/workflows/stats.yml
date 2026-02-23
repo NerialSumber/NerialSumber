@@ -28,41 +28,52 @@ jobs:
           npm install --no-audit --no-fund --ignore-scripts
           npm install express
 
-      - name: Criar e Iniciar Servidor (Wrapper)
+      - name: Criar e Iniciar Servidor (Wrapper Completo)
         env:
           PAT_1: ${{ secrets.GH_TOKEN }}
         run: |
           cd github-readme-stats
           
+          # CRIA O SERVIDOR COM SUPORTE A WAKATIME
           cat <<EOF > local-server.js
           import express from 'express';
           import handler from './api/index.js';
-          import langsHandler from './api/top-langs.js'; 
+          import langsHandler from './api/top-langs.js';
+          import wakatimeHandler from './api/wakatime.js'; // Adicionado WakaTime
 
           const app = express();
           const port = 3000;
 
-          // Rota para Stats Gerais
+          // Rota Stats Gerais
           app.get('/api', async (req, res) => {
-            try { await handler(req, res); } 
-            catch (err) { console.error(err); res.status(500).send('Erro'); }
+            try { await handler(req, res); } catch (err) { console.error(err); res.status(500).send('Erro'); }
           });
 
-          // NOVA ROTA: Top Languages
+          // Rota Linguagens
           app.get('/api/top-langs', async (req, res) => {
-            try { await langsHandler(req, res); } 
-            catch (err) { console.error(err); res.status(500).send('Erro'); }
+            try { await langsHandler(req, res); } catch (err) { console.error(err); res.status(500).send('Erro'); }
+          });
+
+          // Rota WakaTime
+          app.get('/api/wakatime', async (req, res) => {
+            try { await wakatimeHandler(req, res); } catch (err) { console.error(err); res.status(500).send('Erro'); }
           });
 
           app.listen(port, () => {
-            console.log('✅ Servidor rodando na porta ' + port);
+            console.log('✅ Servidor wrapper rodando na porta ' + port);
           });
           EOF
 
+          # INICIA O SERVIDOR
+          echo "🚀 Iniciando servidor..."
           nohup node local-server.js > server.log 2>&1 &
           PID=$!
+          
+          echo "⏳ Aguardando 10 segundos..."
           sleep 10
+          
           if ! kill -0 $PID 2>/dev/null; then
+            echo "❌ O servidor morreu! Logs:"
             cat server.log
             exit 1
           fi
@@ -70,20 +81,22 @@ jobs:
       - name: Gerar Imagens SVG
         run: |
           echo "📸 Baixando Stats..."
-          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true" -o github-stats.svg
+          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
           echo "📸 Baixando Linguagens..."
-          # Aqui pedimos as linguagens. Usei layout=compact que economiza espaço
-          curl -v "http://localhost:3000/api/top-langs?username=NerialSumber&layout=compact&theme=tokyonight&hide_border=true" -o top-langs.svg
+          curl -v "http://localhost:3000/api/top-langs?username=NerialSumber&layout=compact&theme=radical&hide_border=true" -o top-langs.svg
+
+          echo "📸 Baixando WakaTime..."
+          # Aqui usamos o tema 'tokyonight' que você pediu
+          curl -v "http://localhost:3000/api/wakatime?username=NerialSumber&layout=compact&theme=tokyonight" -o wakatime.svg
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Adiciona todos os SVGs gerados
+          # Adiciona todos os SVGs (stats, langs, wakatime)
           git add *.svg
           
-          # Commita se houver mudanças
-          git commit -m "docs: atualiza stats e linguagens" || echo "Sem mudanças"
+          git commit -m "docs: atualiza estatísticas completas" || echo "Sem mudanças"
           git push
