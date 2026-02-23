@@ -2,8 +2,8 @@ name: Update GitHub Stats
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Roda a cada 12 horas
-  workflow_dispatch: # Permite rodar manualmente
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,7 +12,7 @@ jobs:
   update-stats:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do seu repositório
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -20,39 +20,48 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Baixar e Configurar Gerador de Stats
+      - name: Instalar Dependências e Ferramentas
         run: |
-          # Clona o repositório oficial da ferramenta
           git clone https://github.com/anuraghazra/github-readme-stats.git stats-generator
           cd stats-generator
           npm install
+          npm install -g wait-on
+
+      - name: Iniciar Servidor (Debug Mode)
+        env:
+          PAT_1: ${{ secrets.GH_TOKEN }}
+        run: |
+          cd stats-generator
           
-          # Inicia o servidor em background
-          # PAT_1 é a variável que o código oficial espera para o token
-          export PAT_1="${{ secrets.GH_TOKEN }}"
+          # Verifica se o token existe (sem mostrar o valor)
+          if [ -z "$PAT_1" ]; then
+            echo "ERRO CRÍTICO: O segredo GH_TOKEN não foi encontrado ou está vazio!"
+            exit 1
+          fi
+
           export PORT=3000
-          npm start > /dev/null 2>&1 &
+          # Inicia o servidor e joga o log para um arquivo para lermos depois se der erro
+          npm start > server.log 2>&1 &
           
-          # Aguarda o servidor subir (dá um tempo de segurança)
-          echo "Aguardando servidor iniciar..."
-          sleep 10
+          echo "Servidor iniciando... Aguardando porta 3000..."
+          
+          # Espera até 60 segundos pela porta 3000
+          npx wait-on tcp:3000 --timeout 60000 || (cat server.log && exit 1)
+          
+          echo "Servidor online!"
 
       - name: Gerar Imagem SVG
         run: |
-          # Faz a requisição localmente para gerar o SVG
-          # Personalize aqui: mude 'NerialSumber' se seu user for diferente
-          # Adicionei &hide_border=true e &title_color=... para ficar mais bonito
-          curl "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
+          # Gera o SVG
+          curl -v "http://localhost:3000/api?username=NerialSumber&show_icons=true&theme=radical&include_all_commits=true&count_private=true" -o github-stats.svg
           
-          # Move o arquivo para a raiz do workspace para ser commitado
+          # Move para a pasta principal
           mv github-stats.svg ../github-stats.svg
 
       - name: Commit e Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Verifica se houve mudança antes de commitar para não dar erro
           git add github-stats.svg
-          git commit -m "docs: atualiza estatísticas do perfil" || echo "Sem mudanças para commitar"
+          git commit -m "docs: atualiza estatísticas" || echo "Sem mudanças"
           git push
