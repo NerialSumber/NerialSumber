@@ -38,6 +38,7 @@
         <div align="center">
           <div align="center">
             <br>
+            <br>
               <img src="github-stats.svg" width="100%" alt="Estatísticas do Gabriel" />
             <br>
 </div>
