@@ -16,15 +16,15 @@
   <tr>
     <td valign="top" width="50%">
   🔭 I’m currently working on QA, PM and Front-end Development.
-  
+  <br>
   🌱 Currently learning Business Rules & TypeScript.
-  
+  <br>
   👯 Looking to collaborate on smaller-scale projects that offer a lot of space for learning.
-   
+  <br>
   🤔 Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).
-  
+  <br>
   😄 Pronouns: He/Him
-  
+  <br>
   📫 How to reach me: 
 
 <div> 
