@@ -15,6 +15,7 @@
 <table align="center">
   <tr>
     <td valign="top" width="50%">
+      
   🔭 I’m currently working on QA, PM and Front-end Development.
 
 
