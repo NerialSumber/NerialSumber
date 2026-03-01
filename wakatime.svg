@@ -129,7 +129,7 @@
             data-testid="lang-progress"
             x="0"
             y="0"
-            width="150.5205"
+            width="150.38100000000003"
             height="8"
             fill="#292929"
           />
@@ -137,9 +137,9 @@
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
-            x="150.5205"
+            x="150.38100000000003"
             y="0"
-            width="139.779"
+            width="138.8025"
             height="8"
             fill="#cb171e"
           />
@@ -147,9 +147,9 @@
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
-            x="290.29949999999997"
+            x="289.18350000000004"
             y="0"
-            width="101.09099999999998"
+            width="102.7185"
             height="8"
             fill="#3178c6"
           />
@@ -157,9 +157,9 @@
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
-            x="391.3905"
+            x="391.90200000000004"
             y="0"
-            width="29.76"
+            width="29.574"
             height="8"
             fill="#858585"
           />
@@ -167,9 +167,9 @@
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
-            x="421.15049999999997"
+            x="421.47600000000006"
             y="0"
-            width="22.0875"
+            width="21.947999999999997"
             height="8"
             fill="#858585"
           />
@@ -177,9 +177,9 @@
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
-            x="443.23799999999994"
+            x="443.42400000000004"
             y="0"
-            width="21.250500000000002"
+            width="21.111"
             height="8"
             fill="#858585"
           />
@@ -202,7 +202,7 @@
     <g transform="translate(25, 50)">
       <circle cx="5" cy="6" r="5" fill="#3178c6" />
       <text data-testid="lang-name" x="15" y="10" class='lang-name'>
-        TypeScript - 40 mins
+        TypeScript - 41 mins
       </text>
     </g>
   
