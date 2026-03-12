@@ -43,7 +43,7 @@
   </table>
 
 
-  <td valign="top" width="50%" align="center">
+  <td valign="top" width="100%" align="center">
   <br>
   <img src="github-stats.svg" height="150" alt="Estatísticas do Gabriel" /><img src="assets/filmtocat.png" height="150" alt="Octocat Customizado" />
   <br>
