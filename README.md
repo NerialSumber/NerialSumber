@@ -38,22 +38,18 @@
   <a href="https://www.linkedin.com/in/gabrieloliveira8" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
   <a href="https://instagram.com/_gabrelx" target="_blank"><img src="https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white" target="_blank"></a>
 
-  </td>
-    <td valign="top" width="50%">
-      <div align="center">
-        <div align="center">
-          <div align="center">
-            <br>
-            <br>
-              <img src="github-stats.svg" width="100%" alt="Estatísticas do Gabriel" />
-            <br>
-</div>
-</div>
-        <br/>
-      </div>
-    </td>
-  </tr>
-</table>
+  <td valign="top" width="50%">
+  <div align="center">
+  <br>
+  <br>
+    
+  <img align="center" src="github-stats.svg" width="65%" alt="Estatísticas do Gabriel" />
+    
+  <img align="center" src="CAMINHO_DA_SUA_IMAGEM.png" width="30%" alt="Imagem Customizada" />
+    
+  <br>
+  </div>
+</td>
 
 ##
 
