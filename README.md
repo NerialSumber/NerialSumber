@@ -44,7 +44,7 @@
 
 
   <br>
-  <img src="github-stats.svg" height="165" alt="Estatísticas do Gabriel" /><img src="assets/filmtocat.png" height="165" alt="Octocat Customizado" />
+  <img src="github-stats.svg" widtdh=50%, height="165" alt="Estatísticas do Gabriel" /><img src="assets/filmtocat.png" widtdh=50%, height="165" alt="Octocat Customizado" />
   <br>
 
 ##
