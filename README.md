@@ -38,11 +38,9 @@
   <a href="https://www.linkedin.com/in/gabrieloliveira8" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
   <a href="https://instagram.com/_gabrelx" target="_blank"><img src="https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white" target="_blank"></a>
 
-  <td valign="top" width="50%" align="center">
   <br>
   <img src="github-stats.svg" height="165" alt="Estatísticas do Gabriel" /><img src="assets/filmtocat.png" height="165" alt="Octocat Customizado" />
   <br>
-</td>
 
 ##
 
