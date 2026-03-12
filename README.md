@@ -16,19 +16,19 @@
   <tr>
     <td valign="top" width="50%">
       
-  💻 I’m currently working on QA, PM and Front-end Development.
+  <h3>💻</h3> I’m currently working on QA, PM and Front-end Development.
 
 
-  📘 Currently learning Business Rules & TypeScript.
+  <h3>📘</h3> Currently learning Business Rules & TypeScript.
 
 
-  🔎 Looking to collaborate on smaller-scale projects that offer a lot of space for learning.
+  <h3>🔎</h3> Looking to collaborate on smaller-scale projects that offer a lot of space for learning.
 
 
-  ✨ Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).
+  <h3>✨</h3> Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).
 
 
-  😄 Pronouns: He/Him
+  <h3>😄</h3> Pronouns: He/Him
 
 
   <h3 align="center">📫 How to reach me: </h3>
