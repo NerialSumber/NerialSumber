@@ -45,7 +45,7 @@
     
   <img align="center" src="github-stats.svg" width="65%" alt="Estatísticas do Gabriel" />
     
-  <img align="center" src="CAMINHO_DA_SUA_IMAGEM.png" width="30%" alt="Imagem Customizada" />
+  <img align="center" src="filmtocat.png" width="30%" alt="Imagem Customizada" />
     
   <br>
   </div>
