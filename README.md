@@ -16,22 +16,22 @@
   <tr>
     <td valign="top" width="50%">
       
-  <h3>💻</h3> I’m currently working on QA, PM and Front-end Development.
+  <h3>💻 I’m currently working on QA, PM and Front-end Development.</h3>
 
 
-  <h3>📘</h3> Currently learning Business Rules & TypeScript.
+  <h3>📘 Currently learning Business Rules & TypeScript.</h3>
 
 
-  <h3>🔎</h3> Looking to collaborate on smaller-scale projects that offer a lot of space for learning.
+  <h3>🔎 Looking to collaborate on smaller-scale projects that offer a lot of space for learning.</h3>
 
 
-  <h3>✨</h3> Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).
+  <h3>✨ Focused on improving my skills in JavaScript & C ( I’m an newly intern and a student in this field).</h3>
 
 
-  <h3>😄</h3> Pronouns: He/Him
+  <h3>😄 Pronouns: He/Him</h3>
 
 
-  <h3 align="center">📫 How to reach me: </h3>
+  <h2 align="center">📫 How to reach me: </h2>
 
   <div align="center"> 
   <a href = "mailto:gabrieloliveira31082000@gmail.com"><img src="https://img.shields.io/badge/-Gmail-%23333?style=for-the-badge&logo=gmail&logoColor=white" target="_blank"></a>
