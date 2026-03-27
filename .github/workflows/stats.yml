@@ -101,7 +101,7 @@ jobs:
           if [ "$MES" == "02" ] || [ "$MES" == "03" ]; then
             echo "📽️ Absolute Cinema!!"
             # Coloque aqui o nome da imagem original do cinema
-            cp assets/filmtocat.png assets/filmtocat.png
+            cp assets/cinephiloctocat.png assets/filmtocat.png
             
           elif [ "$MES" == "08" ]; then
             echo "🎁 Meu Aniversarioo !!"
