@@ -125,8 +125,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Adiciona todos os SVGs (stats, langs, wakatime)
-          git add *.svg
+          # Adiciona todos os SVGs e também a imagem do filmtocat
+          git add *.svg assets/filmtocat.png
           
-          git commit -m "docs: atualiza estatísticas completas" || echo "Sem mudanças"
+          git commit -m "docs: atualiza estatísticas e imagem sazonal" || echo "Sem mudanças"
           git push
