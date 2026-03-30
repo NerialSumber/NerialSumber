@@ -93,25 +93,25 @@ jobs:
       - name: Trocar imagem por época do ano
         run: |
           # Pega o mês atual (01 a 12)
-          MES="08"
+          MES=$(date =%m)
           
           echo "Mês atual: $MES"
           
           # Lógica para escolher a imagem
-          if "$MES" == "03"; then
+          if ["$MES" = "03"]; then
             echo "📽️ Absolute Cinema!!"
             # Coloque aqui o nome da imagem original do cinema
             cp assets/cinephiloctocat.png assets/filmtocat.png
             
-          elif "$MES" == "08"; then
+          elif ["$MES" = "08"]; then
             echo "🎁 Meu Aniversarioo !!"
             cp assets/hulalooptocat.gif assets/filmtocat.png
             
-          elif "$MES" == "10"; then
+          elif ["$MES" = "10"]; then
             echo "🎃 Mês do Halloween!"
             cp assets/mummytocat.gif assets/filmtocat.png
             
-          elif "$MES" == "12"; then
+          elif ["$MES" = "12"]; then
             echo "🎄 Mês do Natal!"
             cp assets/grinchtocat.gif assets/filmtocat.png
             
