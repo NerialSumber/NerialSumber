@@ -98,7 +98,7 @@ jobs:
           echo "Mês atual: $MES"
           
           # Lógica para escolher a imagem
-          if [ "$MES" == "02" ] || [ "$MES" == "03" ]; then
+          if [ "$MES" == "03" ]; then
             echo "📽️ Absolute Cinema!!"
             # Coloque aqui o nome da imagem original do cinema
             cp assets/cinephiloctocat.png assets/filmtocat.png
