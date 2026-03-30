@@ -101,23 +101,23 @@ jobs:
           if ["$MES" = "03"]; then
             echo "📽️ Absolute Cinema!!"
             # Coloque aqui o nome da imagem original do cinema
-            cp assets/cinephiloctocat.png assets/filmtocat.png
+            cp assets/cinephiloctocat.png assets/basecat.png
             
           elif ["$MES" = "08"]; then
             echo "🎁 Meu Aniversarioo !!"
-            cp assets/hulalooptocat.gif assets/filmtocat.png
+            cp assets/hulalooptocat.gif assets/basecat.png
             
           elif ["$MES" = "10"]; then
             echo "🎃 Mês do Halloween!"
-            cp assets/mummytocat.gif assets/filmtocat.png
+            cp assets/mummytocat.gif assets/basecat.png
             
           elif ["$MES" = "12"]; then
             echo "🎄 Mês do Natal!"
-            cp assets/grinchtocat.gif assets/filmtocat.png
+            cp assets/grinchtocat.gif assets/basecat.png
             
           else
             echo "🐱 Mês normal, usando imagem padrão."
-            cp assets/octocat-1773343804132.png assets/filmtocat.png
+            cp assets/meoctocat.png assets/basecat.png
           fi
           
       - name: Commit e Push
