@@ -98,20 +98,20 @@ jobs:
           echo "Mês atual: $MES"
           
           # Lógica para escolher a imagem
-          if ["$MES" = "03"]; then
+          if [ "$MES" = "03" ]; then
             echo "📽️ Absolute Cinema!!"
             # Coloque aqui o nome da imagem original do cinema
             cp assets/cinephiloctocat.png assets/basecat.png
             
-          elif ["$MES" = "08"]; then
+          elif [ "$MES" = "08" ]; then
             echo "🎁 Meu Aniversarioo !!"
             cp assets/hulalooptocat.gif assets/basecat.png
             
-          elif ["$MES" = "10"]; then
+          elif [ "$MES" = "10" ]; then
             echo "🎃 Mês do Halloween!"
             cp assets/mummytocat.gif assets/basecat.png
             
-          elif ["$MES" = "12"]; then
+          elif [ "$MES" = "12" ]; then
             echo "🎄 Mês do Natal!"
             cp assets/grinchtocat.gif assets/basecat.png
             
@@ -125,8 +125,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # Adiciona a imagem do mês e todos os arquivos SVG que foram gerados
-          git add assets/filmtocat.png *.svg
+          # Adiciona a imagem do mês (basecat) e todos os arquivos SVG que foram gerados
+          git add assets/basecat.png *.svg
           
           # O comando diff --staged --quiet retorna falso se houver mudanças na fila.
           # O 'if !' inverte isso: se houver mudanças, ele entra no bloco de commit.
