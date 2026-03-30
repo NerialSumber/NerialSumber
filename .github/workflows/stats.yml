@@ -93,7 +93,7 @@ jobs:
       - name: Trocar imagem por época do ano
         run: |
           # Pega o mês atual (01 a 12)
-          MES=$(date +%m)
+          MES="03"
           
           echo "Mês atual: $MES"
           
