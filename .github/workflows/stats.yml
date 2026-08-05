@@ -105,7 +105,7 @@ jobs:
             
           elif [ "$MES" = "08" ]; then
             echo "🎁 Meu Aniversarioo !!"
-            cp assets/hulalooptocat.gif assets/basecat.png
+            cp assets/birthdaytocat.png assets/basecat.png
             
           elif [ "$MES" = "10" ]; then
             echo "🎃 Mês do Halloween!"
