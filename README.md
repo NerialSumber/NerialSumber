@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Hi! I'm Gabriel Oliveira! 👋</h1>
-  <h2>QA & PM Intern | Front-end Enthusiast | Student</h2>
+  <h2>WEB Dev & QA Intern | Front-end Enthusiast | Student</h2>
   
 
 
